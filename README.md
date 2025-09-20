@@ -163,3 +163,45 @@ curl 'http://3.144.168.176/convert?lbs=NAN'
 
 ![NAN](images/error_400.png)
 
+## 4. Cleanup
+
+To avoid incurring unnecessary costs, all resources provisioned for this project were terminated. 
+The following steps outline the cleanup process:
+
+### 4.1 Teminate EC2 Instance
+
+1.  Navigate to the EC2 Dashboard in the AWS Management Console.
+2.  Select the instance from the list.
+3.  Choose **Instance state** > **Terminate instance**.
+4.  Confirm the termination.
+
+### 4.2 Remove EBS Volumes
+
+In this project, only the root volume was used, so no orphaned volumes were left behind. However, in a multi-volume setup, you'd clean them up like this:
+
+1.  Navigate to the **Volumes** section under **Elastic Block Store** in the EC2 Dashboard.
+2.  Filter the volumes by the state **`available`** (unattached).
+3.  Select the orphaned volumes and choose **Actions** > **Delete Volume**.
+
+### 4.3 Key Pair
+The key pair used for SSH access was also deleted to maintain a clean AWS environment. 
+
+1.  Navigate to the **Key pairs** section under **Network & Security** in the EC2 Dashboard.
+2.  Select the key pair used for the project.
+3.  Choose **Actions** > **Delete**.
+
+**Screenshot of key pair deletion:**
+![Delete Key Pair](images/delete_key_pair.png)
+
+### 4.4 Security Group
+The Security Group that controlled network traffic to the instance was deleted.
+
+1.  Navigate to the **Security Groups** section under **Network & Security** in the EC2 Dashboard.
+2.  Select the Security Group created for the project.
+3.  Choose **Actions** > **Delete security group**.
+
+**Screenshot of security group deletion:**
+![Delete Security Group](images/delete_security_group.png)
+
+By following these steps, all resources associated with Project 1 have been successfully removed, ensuring no further costs are incurred.
+
