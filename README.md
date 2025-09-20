@@ -20,9 +20,9 @@ The architectural design for hosting this service is explained [here](Design.md)
 
   * **SSH (TCP 22)**: Allowed only from the owner’s IP address.
   * **HTTP (TCP 80)**: Allowed from anywhere (`0.0.0.0/0`).
-  * **HTTPS (TCP 443)**: Allowed from anywhere (`0.0.0.0/0`) (reserved for future SSL/TLS).
+  * **HTTPS (TCP 443)**: Allowed from anywhere (`0.0.0.0/0`).
 
-**Public IP:** `3.144.168.176`
+**Public IP:** `https://asdtesting.duckdns.org/convert?lbs=91`
 
 ### 2.2 Service Installation
 
@@ -73,8 +73,7 @@ NGINX was configured to forward requests from port 80 to the Node.js application
 
 ```nginx
 server {
-    listen 80;
-    server_name _;
+    server_name asdtesting.duckdns.org;
 
     location / {
         proxy_pass http://127.0.0.1:8080;
@@ -82,6 +81,23 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/asdtesting.duckdns.org/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/asdtesting.duckdns.org/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = asdtesting.duckdns.org) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name asdtesting.duckdns.org;
+    return 404; # managed by Certbot
 }
 ```
 
@@ -90,7 +106,7 @@ server {
 The REST API endpoint is:
 
 ```
-http://3.144.168.176/convert?lbs=<value>
+https://asdtesting.duckdns.org/convert?<value>
 ```
 
 Responses are in JSON format. Example:
@@ -108,7 +124,7 @@ Responses are in JSON format. Example:
 **Request:**
 
 ```bash
-curl 'http://3.144.168.176/convert?lbs=0'
+curl 'https://asdtesting.duckdns.org/convert?lbs=0'
 ```
 
 **Response Screenshot:**
@@ -119,7 +135,7 @@ curl 'http://3.144.168.176/convert?lbs=0'
 **Request:**
 
 ```bash
-curl 'http://3.144.168.176/convert?lbs=150'
+curl 'https://asdtesting.duckdns.org/convert?lbs=150'
 ```
 
 **Response Screenshot:**
@@ -130,7 +146,7 @@ curl 'http://3.144.168.176/convert?lbs=150'
 **Request:**
 
 ```bash
-curl 'http://3.144.168.176/convert?lbs=0.1'
+curl 'https://asdtesting.duckdns.org/convert?lbs=0.1'
 ```
 
 **Response Screenshot:**
@@ -142,7 +158,7 @@ curl 'http://3.144.168.176/convert?lbs=0.1'
 **Missing Parameter**
 
 ```bash
-curl 'http://3.144.168.176/convert'
+curl -v 'https://asdtesting.duckdns.org/convert'
 ```
 
 ![error](images/error_convert.png)
@@ -150,7 +166,7 @@ curl 'http://3.144.168.176/convert'
 **Negative Value**
 
 ```bash
-curl 'http://3.144.168.176/convert?lbs=-5'
+curl -v 'https://asdtesting.duckdns.org/convert?lbs=-5'
 ```
 
 ![negative](images/error_negative.png)
@@ -158,7 +174,7 @@ curl 'http://3.144.168.176/convert?lbs=-5'
 **Non-numeric Value**
 
 ```bash
-curl 'http://3.144.168.176/convert?lbs=NAN'
+curl -v 'https://asdtesting.duckdns.org/convert?lbs=NAN'
 ```
 
 ![NAN](images/error_400.png)
