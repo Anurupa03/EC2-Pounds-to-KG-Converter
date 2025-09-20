@@ -7,14 +7,14 @@ The architectural design for hosting this service is explained [here](Design.md)
 ## 1. Prerequisites
 
 * **Ubuntu Linux AMI** on AWS EC2
-* **Node.js** (v18+) and **npm**
+* **Node.js** and **npm**
 * SSH access using a key pair
 
 ## 2. Setup and Deployment
 
 ### 2.1 EC2 Instance
 
-* An EC2 instance was provisioned using an Ubuntu AMI.
+* An EC2 instance (t2.micro) was provisioned using an Ubuntu AMI.
 * A key pair was created for SSH access.
 * The Security Group was configured with the following rules:
 
